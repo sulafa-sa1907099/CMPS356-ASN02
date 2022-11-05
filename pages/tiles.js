@@ -144,9 +144,7 @@ export default function Tiles() {
     }, [level])
 
     useEffect(() => {
-        const local = JSON.parse(window.localStorage.getItem('progress'))
-        console.log(local.rotations)
-      
+
         rotationArrayGenerator(tiles.length)
        
         
