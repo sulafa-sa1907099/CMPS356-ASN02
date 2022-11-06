@@ -91,7 +91,7 @@ export default function Tiles() {
                 setTiles(local.tiles)
                 setMatched(local.matched)
                 setRotations(local.rotations)
-              
+
             }
             else if (local.level !== level) {
                 console.log("NOT EQUAL LEVELS")
@@ -119,7 +119,7 @@ export default function Tiles() {
 
     }, [level])
 
-    
+
 
 
 
@@ -132,7 +132,7 @@ export default function Tiles() {
                 prevMatched.push(clickOne.emoji)
                 const newMatched = prevMatched.filter(element => {
                     return element !== null;
-                  });
+                });
                 const newProgress = {
                     level: local.level,
                     matched: newMatched,
@@ -153,15 +153,15 @@ export default function Tiles() {
 
 
 
-    
+
 
 
     return (
 
         <div>
             <div className="title">
-                <h1 sx={matched.length > levelNum ? { display: "none" } : { display: "flex" }}>Level {levelNum}</h1>
-                <Link className="levelLink" href={`/tiles?level=${nextLevel}`} sx={matched.length < levelNum ? { display: "none" } : { display: "flex" }}> Level {nextLevel} 🡆</Link>
+                <h1 sx={matched?.length > levelNum ? { display: "none" } : { display: "flex" }}>Level {levelNum}</h1>
+                <Link className="levelLink" href={`/tiles?level=${nextLevel}`} sx={matched?.length < levelNum ? { display: "none" } : { display: "flex" }}> Level {nextLevel} 🡆</Link>
 
             </div>
 
@@ -173,7 +173,7 @@ export default function Tiles() {
                                 handleClick(i, e)
                             }}
                             size="large"
-                            disabled={matched.includes(e) ? true : false}
+                            disabled={matched?.includes(e) ? true : false}
                         >
                             <Box sx={{
                                 transform: `rotate(${rotations[i]}turn)`,
