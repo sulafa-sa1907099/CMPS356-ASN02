@@ -73,9 +73,7 @@ export default function Tiles() {
             router.query = 1
         }
 
-        if (typeof window == 'undefined')
-        window.localStorage.setItem('progress',newProgress);
-
+       
     }, [])
 
     useEffect(() => {
@@ -88,7 +86,7 @@ export default function Tiles() {
             if (!level) return;
             else if (local.level == level) {
                 setTiles(local.tiles)
-                setMatched(local.matched)
+                setMatched(local.matched ?? [])
                 setRotations(local.rotations)
 
             }
