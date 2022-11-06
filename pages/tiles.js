@@ -73,6 +73,9 @@ export default function Tiles() {
             router.query = 1
         }
 
+        if (typeof window == 'undefined')
+        window.localStorage.setItem('progress',newProgress);
+
     }, [])
 
     useEffect(() => {
