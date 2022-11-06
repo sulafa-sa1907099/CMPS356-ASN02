@@ -18,7 +18,7 @@ export default function Tiles() {
     const { level } = router.query
     const levelNum = parseInt(level)
     const nextLevel = levelNum + 1
-    const [progress, setProgress] = useState({ level: 1, matched: matched, rotations: [], tiles: [] })
+    const [progress, setProgress] = useState({ level: 1, matched: [], rotations: [], tiles: [] })
 
 
 
