@@ -6,7 +6,6 @@ import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { fontWeight, margin } from "@mui/system";
 import Box from '@mui/material/Box';
-import { match } from "assert";
 
 export default function Tiles() {
     const [tiles, setTiles] = useState([])
@@ -74,9 +73,6 @@ export default function Tiles() {
             router.query = 1
         }
 
-
-
-
     }, [])
 
     useEffect(() => {
@@ -113,9 +109,6 @@ export default function Tiles() {
             }
 
         }
-
-
-
 
     }, [level])
 
