@@ -3,17 +3,12 @@ import { useEffect, useState } from "react"
 import { useRouter } from 'next/router'
 import { Link } from "@mui/material";
 import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
-import * as emoji from "emoji-api";
 import Button from '@mui/material/Button';
 import { fontWeight, margin } from "@mui/system";
 import Box from '@mui/material/Box';
 import { match } from "assert";
 
-
 export default function Tiles() {
-    // const [level, setLevel] = useState(5)
     const [tiles, setTiles] = useState([])
     const [rotations, setRotations] = useState([])
     const [clickOne, setClickOne] = useState({ key: 0, emoji: null })
@@ -23,14 +18,14 @@ export default function Tiles() {
     const { level } = router.query
     const levelNum = parseInt(level)
     const nextLevel = levelNum + 1
-    const [progress, setProgress] = useState({ level: 1, matched: [], rotations: [], tiles: [] })
+    const [progress, setProgress] = useState({ level: 1, matched: matched, rotations: [], tiles: [] })
 
 
 
 
     function handleClick(i, e) {
         clickOne ? setClickTwo({ key: i, emoji: e }) : setClickOne({ key: i, emoji: e })
-        
+
     }
 
     function resetClicks() {
@@ -50,17 +45,12 @@ export default function Tiles() {
         })
         random.sort(() => Math.random() - 0.5)
         setTiles(random)
-        setProgress(prevProgress => {
-            prevProgress = { ...progress }
-            prevProgress.tiles = random
-            return prevProgress
-        })
-
+        return random;
 
     }
 
     function rotationArrayGenerator(count) {
-        
+
         let randomRotations = []
         let i = 0
         let rotation
@@ -71,12 +61,7 @@ export default function Tiles() {
 
         }
         setRotations(randomRotations)
-        setProgress(prevProgress => {
-            prevProgress = { ...progress }
-            prevProgress.rotations = randomRotations
-            return prevProgress
-
-        })
+        return randomRotations;
 
 
     }
@@ -89,111 +74,77 @@ export default function Tiles() {
             router.query = 1
         }
 
-        const newProgress = {
-            level: levelNum,
-            matched: matched,
-            rotations: rotations,
-            tiles: tiles
-        }
-        // setProgress(JSON.parse(window.localStorage.getItem('progress')))
-        // if (typeof window == 'undefined')
-        // window.localStorage.setItem('progress',newProgress);
-
-        // setProgress(() => {
-        //     const progress = localStorage.getItem("progress")
-        //         ? JSON.parse(localStorage.getItem("progress"))
-        //         : {};
-        //     setLoaded(true);
-        //     return progress;
-        // });
 
 
-        console.log(`empty array fired ${tiles}`)
 
     }, [])
 
     useEffect(() => {
-        if (!level)
-            return;
+        const local = JSON.parse(window.localStorage.getItem('progress'))
 
-        // setProgress(prevProgress => {
-        //     prevProgress = { ...progress }
-        //     prevProgress.level = levelNum
-        //     return prevProgress
 
-        // })
-        
-        emojiArrayGenerator()
 
-        const newProgress = {
-            level: levelNum,
-            matched: matched,
-            rotations: rotations,
-            tiles: tiles
+        if (local) {
+
+            if (!level) return;
+            else if (local.level == level) {
+                setTiles(local.tiles)
+                setMatched(local.matched)
+                setRotations(local.rotations)
+              
+            }
+            else if (local.level !== level) {
+                console.log("NOT EQUAL LEVELS")
+
+                const randomTiles = emojiArrayGenerator()
+                const randomRotations = rotationArrayGenerator(level * 2)
+
+
+                const newProgress = {
+                    level: levelNum,
+                    matched: [],
+                    rotations: randomRotations,
+                    tiles: randomTiles
+                }
+
+                setProgress(newProgress)
+                window.localStorage.setItem('progress', JSON.stringify(newProgress))
+
+            }
+
         }
 
-        setProgress(newProgress)
-    
-   
 
-
-
-        console.log("level array fired")
 
 
     }, [level])
 
-    useEffect(() => {
-
-        rotationArrayGenerator(tiles.length)
-       
-        
-        console.log(`tiles array fired ${tiles}`)
+    
 
 
-        console.log(`tiles from progress: ${(progress.tiles)}`)
-        const newProgress = {
-            level: levelNum,
-            matched: matched,
-            rotations: rotations,
-            tiles: tiles
-        }
-
-        setProgress(newProgress)
-
-
-    }, [tiles])
 
     useEffect(() => {
+        const local = JSON.parse(window.localStorage.getItem('progress'))
 
-
-        const newProgress = {
-            level: levelNum,
-            matched: matched,
-            rotations: rotations,
-            tiles: tiles
-        }
-
-        setProgress(newProgress)
-
-
-    }, [rotations])
-
-    useEffect(() => {
         if (clickOne && clickTwo) {
-            // console.log(clickOne, clickTwo)
             if (clickOne.emoji === clickTwo.emoji) {
-                // console.log("these emojis match!")
-                setMatched(prevMatched => {
-                    prevMatched = [...matched]
-                    prevMatched.push(clickOne.emoji)
-                    return prevMatched
-                })
+                const prevMatched = [...local.matched]
+                prevMatched.push(clickOne.emoji)
+                const newMatched = prevMatched.filter(element => {
+                    return element !== null;
+                  });
+                const newProgress = {
+                    level: local.level,
+                    matched: newMatched,
+                    rotations: local.rotations,
+                    tiles: local.tiles
+                }
+                window.localStorage.setItem('progress', JSON.stringify(newProgress))
 
+                setMatched(newMatched)
                 resetClicks()
             }
             else {
-                // console.log("these emojis do not match! :(")
                 resetClicks()
             }
         }
@@ -202,37 +153,7 @@ export default function Tiles() {
 
 
 
-    useEffect(() => {
-
-        const newProgress = {
-            level: levelNum,
-            matched: matched,
-            rotations: rotations,
-            tiles: tiles
-        }
-
-        setProgress(newProgress)
-
-        console.log(`matched array fired ${matched}`)
-
-
-    }, [matched])
-
-    useEffect(() => {
-
-
-        console.log(`tiles from progress: ${(progress.tiles)}`)
-        console.log(`rotations from progress: ${(progress.rotations)}`)
-        console.log(`level from progress: ${(progress.level)}`)
-        console.log(`progress: ${(JSON.stringify(progress))}`)
-        window.localStorage.setItem('progress', JSON.stringify(progress))
-
-
-    }, [progress])
-
-
-
-
+    
 
 
     return (
@@ -240,7 +161,7 @@ export default function Tiles() {
         <div>
             <div className="title">
                 <h1 sx={matched.length > levelNum ? { display: "none" } : { display: "flex" }}>Level {levelNum}</h1>
-                <Link className="levelLink" href={`/tiles?level=${nextLevel}`} sx={matched.length <= levelNum ? { display: "none" } : { display: "flex" }}>Level {nextLevel}</Link>
+                <Link className="levelLink" href={`/tiles?level=${nextLevel}`} sx={matched.length < levelNum ? { display: "none" } : { display: "flex" }}> Level {nextLevel} 🡆</Link>
 
             </div>
 
